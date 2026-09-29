@@ -21,7 +21,6 @@ import { routes as noteRoutes } from "./views/notes.js";
 import { routes as analyticsRoutes } from "./views/analytics.js";
 import { routes as settingsRoutes } from "./views/settings.js";
 import { routes as teamRoutes } from "./views/team.js";
-import { startOnboarding, onboarded } from "./views/onboarding.js";
 
 const ALL_ROUTES = [
   ...dashboardRoutes, ...taskRoutes, ...calendarRoutes, ...focusRoutes,
@@ -342,9 +341,7 @@ function userMenu(anchor) {
     { label: "Notifications", icon: "bell", onClick: () => navigate("settings", "notifications") },
     { type: "sep" },
     { label: "Focus preferences", icon: "timer", onClick: () => navigate("focus") },
-    { label: "Data & privacy", icon: "download", onClick: () => navigate("settings", "data") },
-    { type: "sep" },
-    { label: "Run onboarding again", icon: "refresh", onClick: () => startOnboarding() }
+    { label: "Data & privacy", icon: "download", onClick: () => navigate("settings", "data") }
   ]);
 }
 
@@ -459,8 +456,6 @@ function boot() {
     dom.app.hidden = false;
     if (dom.boot) dom.boot.remove();
   });
-
-  if (!onboarded()) setTimeout(() => startOnboarding(), 60);
 }
 
 boot();

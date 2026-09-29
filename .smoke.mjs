@@ -508,6 +508,14 @@ check("topbar has no user name/email", !byId("topbar").innerHTML.includes("Local
 check("no email anywhere in chrome", !sidebar.innerHTML.includes("@") && !byId("topbar").innerHTML.includes("@"));
 check("settings still reachable", settingsHtml.includes("settings-panel"));
 
+/* Onboarding is gone: no gate on boot, no menu entry, no state flag. */
+check("no onboarding state flag", S.getState().onboarded === undefined, JSON.stringify(S.getState().onboarded));
+check("no onboarding menu entry", !byId("topbar").innerHTML.includes("onboarding") && !sidebar.innerHTML.includes("onboarding"));
+const shellHtml = (await import("node:fs")).readFileSync(join(root, "index.html"), "utf8");
+check("no onboarding mount point in shell", !shellHtml.includes('id="onboarding"'));
+const viewsCss = (await import("node:fs")).readFileSync(join(root, "styles/views.css"), "utf8");
+check("no onboarding css", !viewsCss.includes(".onb"));
+
 console.log(appFailures ? `\n${appFailures} app failure(s)` : "\nApp shell verified.");
 rmSync(tmp, { recursive: true, force: true });
 process.exit(failures + mountFailures + flowFailures + appFailures ? 1 : 0);

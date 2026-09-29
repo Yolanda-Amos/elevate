@@ -334,48 +334,6 @@
 .role-select { min-height: 30px; font-size: var(--fs-xs); padding: 4px 26px 4px 8px; }
 .team-stat { display: flex; align-items: center; gap: var(--s-3); padding: var(--s-4); border: 1px solid var(--border); border-radius: var(--r-md); background: var(--surface); }
 
-/* ---------- Onboarding ---------- */
-.onb {
-  position: fixed; inset: 0; z-index: 150;
-  display: grid; place-items: center;
-  padding: var(--s-5);
-  background: radial-gradient(1000px 520px at 50% -6%, var(--accent-soft) 0%, transparent 60%), var(--bg);
-  overflow-y: auto;
-  animation: fade-in var(--t-slow) var(--ease) both;
-}
-.onb__card {
-  width: 100%; max-width: 660px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-2xl);
-  box-shadow: var(--shadow-xl);
-  padding: var(--s-8) var(--s-7);
-  animation: pop-in var(--t-slow) var(--ease-out) both;
-}
-.onb__brand { display: flex; align-items: center; gap: 10px; margin-bottom: var(--s-6); }
-.onb__title { font-size: var(--fs-2xl); letter-spacing: -.03em; }
-.onb__sub { color: var(--text-2); font-size: var(--fs-sm); margin-top: 6px; }
-.onb__body { margin: var(--s-6) 0; }
-.onb__foot { display: flex; align-items: center; gap: var(--s-3); }
-.onb__steps { display: flex; gap: 6px; margin-left: auto; }
-.onb__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--surface-3); transition: background var(--t) var(--ease), width var(--t) var(--ease); }
-.onb__dot.is-active { background: var(--accent); width: 20px; border-radius: var(--r-full); }
-.onb__options { display: grid; gap: var(--s-3); grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
-.onb__option {
-  display: flex; align-items: flex-start; gap: var(--s-3);
-  padding: var(--s-4);
-  border: 1px solid var(--border); border-radius: var(--r-md);
-  background: var(--surface); text-align: left; cursor: pointer;
-  transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
-}
-.onb__option:hover { border-color: var(--border-strong); transform: translateY(-1px); }
-.onb__option.is-active { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 3px var(--accent-ring); }
-.onb__option-icon { width: 32px; height: 32px; border-radius: var(--r-sm); display: grid; place-items: center; background: var(--surface-2); color: var(--accent); flex: 0 0 auto; }
-.onb__option-title { font-size: var(--fs-sm); font-weight: 600; }
-.onb__option-desc { font-size: var(--fs-xs); color: var(--text-2); }
-.onb__tick { margin-left: auto; color: var(--accent); opacity: 0; }
-.onb__option.is-active .onb__tick { opacity: 1; }
-
 /* ---------- Command palette / global search ---------- */
 .palette {
   width: 100%; max-width: 620px;

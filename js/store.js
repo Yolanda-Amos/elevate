@@ -224,7 +224,6 @@ function createState() {
     version: SEED_VERSION,
     /* Content starts empty — sample data is opt-in from Settings → Data. */
     sampleData: false,
-    onboarded: false,
     createdAt: Date.now(),
     user: {
       id: "u_me",
@@ -237,11 +236,6 @@ function createState() {
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
       plan: "premium",
       billing: "monthly",
-      goals: [],
-      workType: "",
-      areas: [],
-      organizePref: "",
-      productivityGoals: [],
       bio: ""
     },
     /* Just the account holder — invite teammates from the Team view. */
@@ -384,7 +378,6 @@ export const hasSampleData = () => Boolean(state && state.sampleData);
 export function clearAllData() {
   clearStore(STORAGE_KEY);
   state = createState();
-  state.onboarded = false;
   emit("clear");
   return state;
 }
@@ -413,7 +406,6 @@ export const updateQuietHours = (patch) => {
   emit("notifications");
 };
 export const updateProfile = (patch) => { state.user = { ...state.user, ...patch }; emit("profile"); };
-export const completeOnboarding = (patch = {}) => { state.onboarded = true; state.user = { ...state.user, ...patch }; emit("onboarding"); };
 export const updateUi = (patch) => { state.ui = { ...state.ui, ...patch }; emit("ui"); };
 export const updateTaskFilters = (patch) => { state.ui.taskFilters = { ...state.ui.taskFilters, ...patch }; emit("filters"); };
 export const toggleSidebar = () => { state.ui.sidebarCollapsed = !state.ui.sidebarCollapsed; emit("ui"); };

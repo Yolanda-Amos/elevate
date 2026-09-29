@@ -166,14 +166,16 @@ The product owner cut these on purpose; the absence is asserted in `.smoke.mjs`:
 - **AI features and Integrations settings** — removed (they did nothing).
 - **Plan-my-day button**, **habit-progress card**, **"What Elevate noticed"** on the dashboard.
 - **My Day / Today / Upcoming / Goals / All tasks / Inbox** are hidden from the sidebar.
+- **Onboarding entirely.** There is no setup flow — `js/views/onboarding.js` was deleted, along
+  with `state.onboarded`, `completeOnboarding()`, the `#onboarding` mount point and the `.onb*`
+  CSS. The app boots straight to the dashboard. There is no first-run gate.
 
 ## Known leftovers
 
-- `store.js` still holds `user.name` / `user.email` / `user.bio` (all empty by default) and
-  exports `updateProfile`, which onboarding still uses for `workType`, `areas`, `goals`.
-  `user.email` is now written and read nowhere — safe to delete if you want the model to
-  match the UI exactly.
-- `displayName()` in `store.js` is used by the Team view, taskform and the onboarding-built
-  member list; the "You" fallback keeps nameless accounts reading correctly.
+- `store.js` still holds `user.name` / `user.email` / `user.bio` (all empty by default) plus
+  `color`, `role`, `plan` and `billing`, and exports `updateProfile`. Nothing writes or reads
+  them any more — safe to delete if you want the model to match the UI exactly.
+- `displayName()` in `store.js` is used by the Team view and taskform; the "You" fallback
+  keeps nameless accounts reading correctly.
 - `data.js` still defines a full `DEMO_TEAM` roster; it only appears when sample data is on.
 
