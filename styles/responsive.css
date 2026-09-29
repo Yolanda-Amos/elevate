@@ -1,0 +1,146 @@
+/* ==========================================================================
+   Elevate — Responsive: desktop → tablet → mobile
+   ========================================================================== */
+
+/* ---------- Large screens ---------- */
+@media (min-width: 1500px) {
+  :root { --content-max: 1360px; }
+  .dash-grid { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); }
+}
+
+/* ---------- Tablet / small desktop ---------- */
+@media (max-width: 1180px) {
+  .dash-grid,
+  .dash-grid--even { grid-template-columns: minmax(0, 1fr); }
+  .notes-layout { grid-template-columns: 180px minmax(0, 1fr); }
+  .settings-layout { grid-template-columns: 190px minmax(0, 1fr); gap: var(--s-6); }
+}
+
+@media (max-width: 1024px) {
+  .view { padding: var(--s-6) var(--s-5) var(--s-8); }
+  .hero { padding: var(--s-5) var(--s-6); }
+  .project-hero { padding: var(--s-5) var(--s-6); }
+  .app { grid-template-columns: var(--sidebar-w-collapsed) minmax(0, 1fr); }
+  .app .sidebar { padding-inline: var(--s-3); align-items: center; }
+  .app .brand__text,
+  .app .nav-group__label,
+  .app .nav-item__label,
+  .app .nav-item__count,
+  .app .nav-search span,
+  .app .nav-search kbd,
+  .app .plan-card { display: none; }
+  .app .nav-search { justify-content: center; padding: 8px; width: 42px; }
+  .app .nav-item { justify-content: center; padding: 9px; }
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 860px) {
+  body { font-size: var(--fs-md); }
+
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .app .sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0;
+    width: 268px; height: 100vh;
+    align-items: stretch;
+    padding: var(--s-5) var(--s-3) var(--s-4);
+    transform: translateX(-104%);
+    box-shadow: var(--shadow-xl);
+    border-radius: 0 var(--r-lg) var(--r-lg) 0;
+  }
+  .app.nav-open .sidebar { transform: none; }
+  .app .brand__text,
+  .app .nav-group__label,
+  .app .nav-item__label,
+  .app .nav-item__count,
+  .app .nav-search span,
+  .app .nav-search kbd,
+  .app .plan-card { display: revert; }
+  .app .nav-search { width: auto; justify-content: flex-start; }
+  .app .nav-item { justify-content: flex-start; padding: 10px 12px; }
+  .nav-scroll { padding-bottom: var(--s-6); }
+
+  .bottomnav { display: flex; }
+  .fab { display: grid; }
+
+  .topbar { padding: 0 var(--s-4); gap: var(--s-2); }
+  .topbar__title { font-size: var(--fs-sm); }
+  .view { padding: var(--s-5) var(--s-4) calc(var(--bottomnav-h) + var(--s-8)); }
+  .view--flush { padding-bottom: calc(var(--bottomnav-h) + var(--s-8)); }
+
+  .page-head { flex-direction: column; align-items: stretch; gap: var(--s-3); }
+  .page-head__actions { justify-content: flex-start; }
+  .hero { padding: var(--s-4); }
+  .hero__side { margin-left: 0; width: 100%; justify-content: space-between; }
+  .dash-grid { gap: var(--s-4); }
+  .dash { gap: var(--s-5); }
+
+  .stat-grid { grid-template-columns: repeat(auto-fit, minmax(148px, 1fr)); gap: var(--s-3); }
+  .stat { padding: var(--s-3) var(--s-4); }
+  .stat__value { font-size: var(--fs-xl); }
+  .stat-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .stat-chip { padding: 6px var(--s-2); }
+  .stat-chip__value { font-size: var(--fs-md); }
+  .stat-chip__icon { width: 22px; height: 22px; }
+  .dash-list--scroll { max-height: 216px; }
+
+  .kanban__col { flex: 0 0 268px; }
+  .cal__cell { min-height: 78px; padding: 4px; }
+  .cal__event { font-size: 9.5px; }
+  .tgrid__gutter, .tgrid__hours, .tgrid__hour-label { width: 46px; }
+  .tgrid__hour-label { font-size: 9.5px; padding-right: 4px; }
+
+  .notes-layout, .settings-layout { grid-template-columns: minmax(0, 1fr); }
+  .settings-nav { position: static; flex-direction: row; overflow-x: auto; gap: 4px; padding-bottom: var(--s-2); }
+  .settings-nav .settings-block { display: contents; }
+  .settings-nav .nav-item { width: auto; white-space: nowrap; }
+  .notes-layout .notes-side { display: flex; gap: 6px; overflow-x: auto; }
+
+  .modal { max-width: none; }
+  .overlay { padding: var(--s-3); align-items: flex-end; }
+  .overlay--top { align-items: flex-start; padding-top: var(--s-5); }
+  .modal { border-radius: var(--r-xl) var(--r-xl) var(--r-md) var(--r-md); max-height: 88vh; }
+  .drawer { width: 100%; border-left: 0; }
+  .drawer__body { padding: var(--s-4); }
+
+  .palette { max-height: 88vh; border-radius: var(--r-lg); }
+  .toast-stack { left: var(--s-4); right: var(--s-4); bottom: calc(var(--bottomnav-h) + var(--s-3)); max-width: none; }
+
+  .focus-stage { padding: var(--s-4); }
+  .focus-timer { font-size: clamp(52px, 20vw, 96px); }
+  .focus-sounds { grid-template-columns: repeat(auto-fit, minmax(136px, 1fr)); }
+
+  .onb__card { padding: var(--s-6) var(--s-5); }
+  .onb__title { font-size: var(--fs-xl); }
+  .onb__foot { flex-wrap: wrap; }
+  .plan-grid { grid-template-columns: minmax(0, 1fr); }
+
+  .row-item { padding: 10px; }
+  .row-item__actions { opacity: 1; }
+
+  .hide-mobile { display: none !important; }
+  .show-mobile { display: grid !important; }
+  .app.nav-open ~ .scrim,
+  .app.nav-open .scrim { opacity: 1; pointer-events: auto; }
+}
+
+/* Mobile menu trigger: only shown inside the mobile breakpoint. */
+.show-mobile { display: none; }
+
+@media (max-width: 520px) {
+  .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .project-grid, .goal-grid, .notes-grid { grid-template-columns: minmax(0, 1fr); }
+  .cal__cell { min-height: 64px; }
+  .cal__date { font-size: 10px; }
+  .toolbar { gap: 6px; }
+  .segmented__item span { display: none; }
+  .segmented__item { padding: 0 8px; }
+  .hero__greet { font-size: var(--fs-xl); }
+  .focus-controls .btn { padding: 0 12px; }
+}
+
+/* ---------- Print ---------- */
+@media print {
+  .sidebar, .topbar, .bottomnav, .fab, .toast-stack { display: none !important; }
+  .view { padding: 0; }
+  .app { grid-template-columns: minmax(0, 1fr); }
+}
