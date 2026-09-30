@@ -516,6 +516,57 @@ check("no onboarding mount point in shell", !shellHtml.includes('id="onboarding"
 const viewsCss = (await import("node:fs")).readFileSync(join(root, "styles/views.css"), "utf8");
 check("no onboarding css", !viewsCss.includes(".onb"));
 
+/* Typography refresh + pointer glow. */
+check("font link carries both families", shellHtml.includes("Plus+Jakarta+Sans") && shellHtml.includes("Fraunces"));
+check("no Inter left in the shell", !shellHtml.includes("family=Inter"));
+const tokensCss = (await import("node:fs")).readFileSync(join(root, "styles/tokens.css"), "utf8");
+check("--font is Plus Jakarta", /--font:\s*"Plus Jakarta Sans"/.test(tokensCss));
+check("--font-display token exists", tokensCss.includes('--font-display: "Fraunces"'));
+const baseCss = (await import("node:fs")).readFileSync(join(root, "styles/base.css"), "utf8");
+check("display face mapped to titles", baseCss.includes(".hero__greet") && baseCss.includes("var(--font-display)"));
+check("serif can be switched off", baseCss.includes('html[data-fonts="sans"]'));
+check("glow layer declared", baseCss.includes(".cursor-trail") && baseCss.includes("pointer-events: none"));
+check("glow honours reduced motion", /@media \(prefers-reduced-motion: reduce\) \{ \.cursor-trail/.test(baseCss));
+check("glow sits under overlays", /--z-cursor:\s*(\d+)/.exec(tokensCss)[1] < 60);
+check("appearance offers both toggles", settingsHtml.includes("displayFonts") && settingsHtml.includes("cursorTrail"));
+check("dead reduce-motion toggle stays gone", !settingsHtml.includes("reduceMotion"));
+
+/* The trail must be inert where it should not run, and never throw. */
+const { createCursorTrail } = await import(pathToFileURL(join(tmp, "cursor.mjs")).href);
+const trail = createCursorTrail();
+check("trail API is safe without a canvas", typeof trail.setEnabled === "function" && trail.enabled === false);
+trail.setEnabled(true);
+check("trail stays off without a 2d context", trail.enabled === false);
+trail.destroy();
+check("destroy is safe", true);
+
+/* Sample data: the dashboard toggle must really load and clear the workspace. */
+const dashRoute = cache.get("dashboard").routes.find((r) => r.name === "dashboard");
+S.clearAllData();
+S.setSampleData(false);
+const emptyDash = dashRoute.render([]);
+check("sample switch rendered off", emptyDash.includes('data-act="sample-data"') && emptyDash.includes('aria-checked="false"'));
+check("empty dashboard offers sample data", emptyDash.includes("Load sample data"));
+const clickHandlers = (listeners.window.click || []).slice();
+/* A realistic event: the node answers [data-act] and nothing else, so every
+   other view's handler takes its normal "not my action" path. */
+const fakeBtn = { dataset: { act: "sample-data" }, closest: (sel) => (sel === "[data-act]" ? fakeBtn : null) };
+let threw = 0;
+for (const fn of clickHandlers) {
+  try { fn({ target: fakeBtn, pointerType: "mouse" }); } catch { threw += 1; }
+}
+check("no handler throws on the click", threw === 0, `${threw} threw`);
+check("clicking the switch loads sample data", S.hasSampleData() && S.getTasks().length > 0, `${S.getTasks().length} tasks`);
+const onDash = dashRoute.render([]);
+check("sample switch rendered on", onDash.includes('aria-checked="true"') && !onDash.includes("Load sample data"));
+const dashSrc = readFileSync(join(root, "js/views/dashboard.js"), "utf8");
+check("clearing asks for confirmation", /case "sample-data"[\s\S]*confirmDialog/.test(dashSrc));
+S.setSampleData(false);
+const clearedDash = dashRoute.render([]);
+check("switch back off when cleared", clearedDash.includes('aria-checked="false"') && S.getTasks().length === 0);
+
+
+
 console.log(appFailures ? `\n${appFailures} app failure(s)` : "\nApp shell verified.");
 rmSync(tmp, { recursive: true, force: true });
 process.exit(failures + mountFailures + flowFailures + appFailures ? 1 : 0);

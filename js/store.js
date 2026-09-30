@@ -247,6 +247,8 @@ function createState() {
       theme: "light",
       accent: "violet",
       density: "comfortable",
+      cursorTrail: true,
+      displayFonts: true,
       sidebarCollapsed: false,
       lastRoute: "dashboard",
       taskView: "list",

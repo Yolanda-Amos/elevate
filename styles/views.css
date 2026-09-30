@@ -24,6 +24,23 @@
 .hero__streak { display: flex; align-items: center; gap: var(--s-3); }
 .hero__streak-value { font-size: var(--fs-2xl); font-weight: 600; letter-spacing: -.03em; line-height: 1; }
 
+/* Sample-data switch — the one place demo content can be added or removed
+   from the app itself, so the empty dashboard is never a dead end. */
+.hero__sample {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-xs);
+  min-width: 186px;
+}
+.hero__sample-text { display: grid; gap: 1px; min-width: 0; }
+.hero__sample-title { font-size: var(--fs-sm); font-weight: 600; }
+.hero__sample-desc { font-size: var(--fs-2xs); color: var(--text-3); }
+
 .stat-grid { display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fit, minmax(186px, 1fr)); }
 
 /* Compact stat strip — one dense row, so the day fits above the fold. */

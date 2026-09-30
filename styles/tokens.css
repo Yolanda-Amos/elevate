@@ -76,9 +76,13 @@
   --shadow-xl: 0 10px 24px rgba(16, 18, 25, 0.08), 0 32px 64px rgba(16, 18, 25, 0.14);
   --shadow-pop: 0 8px 30px rgba(16, 18, 25, 0.14);
 
-  /* ---- Type ---- */
-  --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* ---- Type ----
+     Plus Jakarta Sans carries the interface; Fraunces (an optical-sizing serif)
+     is reserved for the display surfaces — greeting, titles, headline numbers. */
+  --font: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Fraunces", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  --tracking-display: -0.018em;
   --fs-3xs: 10.5px;
   --fs-2xs: 11.5px;
   --fs-xs: 12.5px;
@@ -109,6 +113,9 @@
   --z-overlay: 60;
   --z-modal: 70;
   --z-toast: 90;
+  /* The pointer glow sits above content but under every overlay, so dialogs
+     are never tinted by it. */
+  --z-cursor: 50;
 }
 
 /* ---- Accent presets (Settings → Appearance → Custom themes) ---- */

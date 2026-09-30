@@ -6,11 +6,12 @@ import {
   nowHHMM, toMinutes, motivation
 } from "../utils.js";
 import { icon } from "../icons.js";
-import { emptyState, progressRing } from "../ui.js";
+import { emptyState, progressRing, toast, confirmDialog } from "../ui.js";
 import { barChart } from "../charts.js";
 import {
   todayOverview, weeklySummary, myDayTasks, todayTasks, upcomingTasks, getEventsForDate,
-  getProject, tasksWithBlocks, tasksDueOn, focusStats, getUi, updateUi
+  getProject, tasksWithBlocks, tasksDueOn, focusStats, getUi, updateUi,
+  hasSampleData, setSampleData, getTasks
 } from "../store.js";
 import { taskRow, bindTaskList } from "../taskrows.js";
 import { openQuickAdd } from "../taskform.js";
@@ -132,6 +133,10 @@ export function render() {
   const schedule = buildSchedule();
   const focus = focusStats(7);
   const upcoming = upcomingTasks(7).slice(0, 5);
+  const sampleOn = hasSampleData();
+  /* Nothing of the user's own and no demo loaded — the one moment worth
+     offering the sample workspace, without nagging once real work exists. */
+  const workspaceEmpty = !sampleOn && getTasks().length === 0;
 
   return `
     <div class="dash">
@@ -156,6 +161,14 @@ export function render() {
                 <div class="hero__streak-value">${overview.streak}<span class="fs-sm text-3">d</span></div>
                 <span class="fs-xs text-3">Streak · best ${overview.bestStreak}d</span>
               </div>
+            </div>
+            <div class="hero__sample">
+              <div class="hero__sample-text">
+                <span class="hero__sample-title">Sample data</span>
+                <span class="hero__sample-desc">${sampleOn ? "Demo workspace loaded" : "Your workspace is empty"}</span>
+              </div>
+              <button class="switch${sampleOn ? " is-on" : ""}" type="button" role="switch"
+                aria-checked="${String(sampleOn)}" data-act="sample-data" aria-label="Sample data"></button>
             </div>
           </div>
         </div>
@@ -192,7 +205,9 @@ export function render() {
       icon: "sun",
       title: "Your day is open",
       text: "Add the two or three things that would make today feel like a win.",
-      actions: `<button class="btn btn--primary btn--sm" type="button" data-act="quick-add-myday">${icon("plus", 14)} Add a task</button>`,
+      actions: `<button class="btn btn--primary btn--sm" type="button" data-act="quick-add-myday">${icon("plus", 14)} Add a task</button>${workspaceEmpty
+        ? `<button class="btn btn--ghost btn--sm" type="button" data-act="sample-data">${icon("sparkles", 14)} Load sample data</button>`
+        : ""}`,
       small: true
     })}
           </section>
@@ -289,6 +304,27 @@ export function mount(root, { rerender } = {}) {
         if (typeof rerender === "function") rerender();
         break;
       }
+      case "sample-data": {
+        const turningOn = !hasSampleData();
+        const run = () => {
+          setSampleData(turningOn);
+          toast(turningOn
+            ? { title: "Sample data loaded", desc: "A demo workspace to explore — switch it off any time.", type: "success" }
+            : { title: "Sample data cleared", desc: "Your workspace is empty again.", type: "info" });
+          if (typeof rerender === "function") rerender();
+        };
+        /* Clearing deletes real records, so it always asks first. */
+        if (turningOn) run();
+        else {
+          confirmDialog({
+            title: "Clear all sample data?",
+            message: "Every task, project, note, habit, goal and event will be deleted. This cannot be undone.",
+            confirmLabel: "Clear everything",
+            danger: true
+          }).then((ok) => { if (ok) run(); });
+        }
+        break;
+      }
       case "go-today":
         navigate("today");
         break;
@@ -297,12 +333,6 @@ export function mount(root, { rerender } = {}) {
         break;
       case "go-upcoming":
         navigate("upcoming");
-        break;
-      case "go-habits":
-        navigate("habits");
-        break;
-      case "go-plans":
-        navigate("settings", "subscription");
         break;
       default:
         break;

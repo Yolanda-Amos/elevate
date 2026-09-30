@@ -68,7 +68,6 @@ const selectRow = (label, act, options, value) => `
 /* --------------------------------------------------------------- Sections */
 function appearanceSection() {
   const ui = getUi();
-  const prefs = getPreferences();
   return `
     ${sectionBlock("Theme", "Switch between light, dark and your system setting.", `
       <div class="theme-preview">
@@ -89,7 +88,8 @@ function appearanceSection() {
         <button class="segmented__item${ui.density !== "compact" ? " is-active" : ""}" type="button" data-act="density" data-density="comfortable">Comfortable</button>
         <button class="segmented__item${ui.density === "compact" ? " is-active" : ""}" type="button" data-act="density" data-density="compact">Compact</button>
       </div>`)}
-    ${sectionBlock("Motion", "Reduce animations if you prefer stillness.", switchRow("reduceMotion", "Reduce motion", "Calms transitions across the app.", Boolean(prefs.reduceMotion), "prefs"))}`;
+    ${sectionBlock("Typography", "Fraunces sets the greeting, titles and headline numbers. Turn it off for a single sans across the app.", switchRow("displayFonts", "Display serif", "Headings and big numbers use the serif display face.", ui.displayFonts !== false, "ui"))}
+    ${sectionBlock("Motion", "Animation already calms down if your system asks for reduced motion.", switchRow("cursorTrail", "Cursor glow", "A soft trail follows the pointer. Skipped on touch devices.", ui.cursorTrail !== false, "ui"))}`;
 }
 
 function preferencesSection() {
@@ -281,6 +281,10 @@ export function mount(root, { rerender, params = [] } = {}) {
         if (key === "quietHours") updateQuietHours({ enabled: !getNotifications().quietHours.enabled });
         else updateNotifications({ [key]: !getNotifications()[key] });
       } else if (group === "prefs") updatePreferences({ [key]: !getPreferences()[key] });
+      else if (group === "ui") {
+        const current = key === "cursorTrail" ? getUi().cursorTrail !== false : getUi().displayFonts !== false;
+        updateUi({ [key]: !current });
+      }
       refresh();
       return;
     }

@@ -14,7 +14,7 @@ serve.cmd           starts a static server on :5173 and opens the browser
 js/app.js           app shell — route registry, sidebar/topbar, palette, reminders, boot
 js/store.js         single source of truth: state, pub/sub, all CRUD + derived stats
 js/views/*.js       one module per view, each exporting a `routes` array
-js/{utils,ui,icons,charts,audio,nlp,router,taskrows,taskform}.js   shared subsystems
+js/{utils,ui,icons,charts,audio,nlp,router,taskrows,taskform,cursor}.js   shared subsystems
 styles/*.css        hand-written, ~1,400 lines total
 ```
 
@@ -128,6 +128,16 @@ therefore silent — check the name against the `PATHS` map in `icons.js` (kebab
   `styles/`. If you delete a component, delete its CSS too — there is no purge step, so dead
   rules silently accumulate and confuse the next reader.
 - **Charts:** extend `charts.js` (SVG string builders) rather than hand-rolling SVG in a view.
+- **Typography is two faces, assigned by role.** `--font` (Plus Jakarta Sans) carries everything
+  scrubbable; `--font-display` (Fraunces) is applied only to statements — greeting, `h1`/`h2`,
+  card/modal/editor titles, headline numbers. The map lives in one block at the end of
+  `base.css`; `html[data-fonts="sans"]` (set by `applyTheme()` from `ui.displayFonts`) reverts
+  every one of those selectors. Add new display surfaces to *both* lists or the "Display serif"
+  toggle will leave them behind.
+- **`js/cursor.js` must stay cheap.** It runs a rAF loop that is only alive while the pointer
+  moves, bails without a 2d context (so the Node tests don't explode), skips touch pointers and
+  `prefers-reduced-motion`, and its canvas is `pointer-events: none` at `--z-cursor` (50 — under
+  `--z-overlay`) so it can't eat a click or tint a dialog.
 - **Intent beats accident.** If a feature was cut on purpose, add a regression assertion so it
   doesn't quietly return — see the removal checks at the end of `.smoke.mjs`.
 
@@ -169,6 +179,12 @@ The product owner cut these on purpose; the absence is asserted in `.smoke.mjs`:
 - **Onboarding entirely.** There is no setup flow — `js/views/onboarding.js` was deleted, along
   with `state.onboarded`, `completeOnboarding()`, the `#onboarding` mount point and the `.onb*`
   CSS. The app boots straight to the dashboard. There is no first-run gate.
+- **The "Reduce motion" settings toggle** — removed because it was never read by any CSS or
+  JS. `prefers-reduced-motion` is honoured globally in `base.css` instead; don't re-add a
+  user-facing switch that does nothing.
+- **Sample data is opt-in, from two places:** Settings → Data and the dashboard hero switch
+  (`data-act="sample-data"`). Turning it *off* deletes records, so it must go through
+  `confirmDialog` first.
 
 ## Known leftovers
 

@@ -19,7 +19,8 @@ body {
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
+  font-optical-sizing: auto;
+  font-variant-ligatures: common-ligatures contextual;
   min-height: 100vh;
   overscroll-behavior-y: none;
   transition: background var(--t) var(--ease), color var(--t) var(--ease);
@@ -32,6 +33,15 @@ h1, h2, h3, h4, h5 {
   color: var(--text);
   text-wrap: balance;
 }
+/* Headings carry the display face; h3 and below stay in the UI face because
+   they are used for small component labels where a serif costs legibility. */
+h1, h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: var(--tracking-display);
+  line-height: 1.14;
+}
+h3, h4, h5 { font-family: var(--font); }
 h1 { font-size: var(--fs-3xl); }
 h2 { font-size: var(--fs-2xl); }
 h3 { font-size: var(--fs-xl); }
@@ -148,4 +158,79 @@ small { font-size: var(--fs-xs); }
 .boot__bar span { display: block; height: 100%; width: 40%; border-radius: inherit; background: var(--accent); animation: boot-slide 1.15s var(--ease) infinite; }
 @keyframes boot-slide { 0% { transform: translateX(-100%); } 100% { transform: translateX(300%); } }
 .boot__hint { font-size: var(--fs-xs); color: var(--text-3); }
+
+/* ==========================================================================
+   Display type map
+   Fraunces is applied only where a line is read as a *statement* — the
+   greeting, page/section titles, headline numbers, card and modal titles.
+   Everything scrubbable (task rows, inputs, nav, chips) stays Plus Jakarta.
+   ========================================================================== */
+.display { font-family: var(--font-display); letter-spacing: var(--tracking-display); }
+
+.hero__greet,
+.hero__streak-value,
+.topbar__title,
+.boot__label,
+.card__head h2,
+.card__head h3,
+.card-title,
+.settings-block__title,
+.section-head__title,
+.empty__title,
+.modal__head h2,
+.drawer__head h2,
+.goal-card__title,
+.note-card__title,
+.editor__title,
+.detail__title,
+.stat-chip__value {
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking-display);
+}
+
+/* Numbers in the serif are lovely but drift out of alignment; keep them
+   tabular so columns of figures still line up. */
+.stat-chip__value,
+.hero__streak-value { font-variant-numeric: tabular-nums; }
+
+/* Settings → Appearance → "Display serif" off, or a narrow viewport, falls
+   back to the UI face everywhere. */
+html[data-fonts="sans"] .display,
+html[data-fonts="sans"] h1,
+html[data-fonts="sans"] h2,
+html[data-fonts="sans"] .hero__greet,
+html[data-fonts="sans"] .hero__streak-value,
+html[data-fonts="sans"] .topbar__title,
+html[data-fonts="sans"] .boot__label,
+html[data-fonts="sans"] .card__head h2,
+html[data-fonts="sans"] .card__head h3,
+html[data-fonts="sans"] .card-title,
+html[data-fonts="sans"] .settings-block__title,
+html[data-fonts="sans"] .section-head__title,
+html[data-fonts="sans"] .empty__title,
+html[data-fonts="sans"] .modal__head h2,
+html[data-fonts="sans"] .drawer__head h2,
+html[data-fonts="sans"] .goal-card__title,
+html[data-fonts="sans"] .note-card__title,
+html[data-fonts="sans"] .editor__title,
+html[data-fonts="sans"] .detail__title,
+html[data-fonts="sans"] .stat-chip__value {
+  font-family: var(--font);
+  letter-spacing: -0.02em;
+}
+
+/* ---- Cursor glow (js/cursor.js) ---- */
+.cursor-trail {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: var(--z-cursor);
+  pointer-events: none;          /* never intercepts a click */
+  opacity: 0;
+  transition: opacity var(--t) var(--ease);
+}
+.cursor-trail.is-on { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .cursor-trail { display: none; } }
+
 

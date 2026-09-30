@@ -11,6 +11,7 @@ import {
   markReminderSent, notificationsSupported, todayOverview, getNotifications, toggleSidebar
 } from "./store.js";
 import { openQuickAdd } from "./taskform.js";
+import { createCursorTrail } from "./cursor.js";
 import { routes as dashboardRoutes } from "./views/dashboard.js";
 import { routes as taskRoutes } from "./views/tasks.js";
 import { routes as calendarRoutes } from "./views/calendar.js";
@@ -428,16 +429,24 @@ function applyTheme() {
   document.documentElement.dataset.theme = theme;
   document.documentElement.dataset.accent = ui.accent || "violet";
   document.documentElement.dataset.density = ui.density || "comfortable";
+  /* "Display serif" off → the UI face everywhere (see base.css type map). */
+  document.documentElement.dataset.fonts = ui.displayFonts === false ? "sans" : "serif";
 }
 
 function boot() {
   hydrate();
   applyTheme();
 
+  /* Pointer glow: opt-out in Settings → Appearance, and silently skipped on
+     touch devices or when the OS asks for reduced motion. */
+  const cursorTrail = createCursorTrail();
+  cursorTrail.setEnabled(getUi().cursorTrail !== false);
+
   const applyChrome = () => {
     applyTheme();
     if (getUi().sidebarCollapsed) dom.app.classList.add("is-collapsed");
     else dom.app.classList.remove("is-collapsed");
+    cursorTrail.setEnabled(getUi().cursorTrail !== false);
   };
 
   /* Store changes refresh the chrome (nav counts, title). Views repaint themselves
